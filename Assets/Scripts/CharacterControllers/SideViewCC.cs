@@ -98,7 +98,7 @@ public class SideViewCC : MonoBehaviour
             }
         }
 
-        _rb.velocity = _movementVector;
+        _rb.linearVelocity = _movementVector;
     }
 
     void OnCollisionEnter2D(Collision2D other)

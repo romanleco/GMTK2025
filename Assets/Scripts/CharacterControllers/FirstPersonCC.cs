@@ -97,7 +97,7 @@ public class FirstPersonCC : MonoBehaviour
             }
         }
 
-        _rb.velocity = transform.TransformDirection(_movementVector);
+        _rb.linearVelocity = transform.TransformDirection(_movementVector);
     }
 
     void OnCollisionEnter(Collision other)

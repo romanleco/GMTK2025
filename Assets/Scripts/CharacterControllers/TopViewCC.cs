@@ -71,7 +71,7 @@ public class TopViewCC : MonoBehaviour
         _movementVector.x = _horizontal;
         _movementVector.y = _vertical;
 
-        _rb.velocity = _movementVector * _speed;
+        _rb.linearVelocity = _movementVector * _speed;
     }
 
     // private void AnimationHandling()

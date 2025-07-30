@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "UnityProjectTemplate.sln"
+    "dotnet.defaultSolution": "GMTK2025.sln"
 }
