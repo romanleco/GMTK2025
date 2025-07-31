@@ -11,7 +11,7 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     void Start()
     {
-        DataContainer loadedData = SaveManager.Instance.Load();
+        DataContainer loadedData = SaveManager.Singleton.Load();
         if(loadedData != null)
         {
             _effectsAudioSource.volume = loadedData.sEffectsVolume;

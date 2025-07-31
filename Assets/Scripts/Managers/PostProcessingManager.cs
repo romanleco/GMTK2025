@@ -10,7 +10,7 @@ public class PostProcessingManager : MonoSingleton<PostProcessingManager>
 
     void Start()
     {
-        DataContainer loadedData = SaveManager.Instance.Load();
+        DataContainer loadedData = SaveManager.Singleton.Load();
         if(loadedData != null)
         {
             SetVignetteActive(loadedData.vignette);

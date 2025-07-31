@@ -6,7 +6,7 @@ public class GameManager : MonoSingleton<GameManager>
 {
     void Start()
     {
-        DataContainer loadedData = SaveManager.Instance.Load();
+        DataContainer loadedData = SaveManager.Singleton.Load();
         if(loadedData != null)
         {
             Debug.Log("Save file found");
@@ -14,7 +14,7 @@ public class GameManager : MonoSingleton<GameManager>
         else
         {
             Debug.Log("No save file detected, creating a new save file");
-            SaveManager.Instance.Save(100, 100, true, true);
+            SaveManager.Singleton.Save(100, 100, true, true);
         }
     }
 

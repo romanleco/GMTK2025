@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
         _rotation *= _speed;
         transform.Rotate(Vector3.up * _rotation * Time.fixedDeltaTime * _rotationSpeed, Space.World);
         
-        ConfineMovement();
+        // ConfineMovement();
     }
 
     private void ConfineMovement()

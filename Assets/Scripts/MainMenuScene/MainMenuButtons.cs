@@ -6,7 +6,7 @@ public class MainMenuButtons : MonoBehaviour
 {
     public void Play()
     {
-        SceneManager.Instance.ChangeScene("MainScene");
+        SceneManager.Singleton.ChangeScene("MainScene");
     }
 
     public void Quit()
