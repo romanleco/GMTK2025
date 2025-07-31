@@ -17,23 +17,15 @@ public class MapManager : MonoSingleton<MapManager>
     private void CalculateGridPositions()
     {
         Vector3 assignmentVector = Vector3.zero;
-        assignmentVector.x += (gridCellSize / 2);
-        assignmentVector.z -= (gridCellSize / 2);
         assignmentVector.y = 1;
 
         for (int i = 0; i < gridSize; i++)
         {
             for (int e = 0; e < gridSize; e++)
             {
-                _gridPositions[i, e] = assignmentVector;
                 assignmentVector.x = (gridCellSize / 2) + (gridCellSize * i);
                 assignmentVector.z = -((gridCellSize / 2) + (gridCellSize * e));
-
-                // if (i == 19)
-                // {
-                //     Debug.Log($"I: {i} | E: {e} | AV: {assignmentVector}");
-                // }
-                if (i == 19 && e == 19) Debug.Log($"Assignment Vector: {assignmentVector}");
+                _gridPositions[i, e] = assignmentVector;
             }
         }
     }

@@ -14,7 +14,11 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float _maxHeight = 12;
     [SerializeField] private float _minHeight = 2;
-    [SerializeField] private float _adjustedMapSize = 10.5f;
+    [Header("Confine Movement")]
+    [SerializeField] private float _xMinPos = 0;
+    [SerializeField] private float _xMaxPos = 40;
+    [SerializeField] private float _zMinPos = -20;
+    [SerializeField] private float _zMaxPos = 20;
     void Update()
     {
         _direction.x = Input.GetAxis("Horizontal") * _speed;
@@ -43,14 +47,14 @@ public class PlayerMovement : MonoBehaviour
         _rotation *= _speed;
         transform.Rotate(Vector3.up * _rotation * Time.fixedDeltaTime * _rotationSpeed, Space.World);
         
-        // ConfineMovement();
+        ConfineMovement();
     }
 
     private void ConfineMovement()
     {
-        float newX = Mathf.Clamp(transform.position.x, -_adjustedMapSize, _adjustedMapSize);
+        float newX = Mathf.Clamp(transform.position.x, _xMinPos, _xMaxPos);
         float newY = Mathf.Clamp(transform.position.y, _minHeight, _maxHeight);
-        float newZ = Mathf.Clamp(transform.position.z, -_adjustedMapSize, _adjustedMapSize);
+        float newZ = Mathf.Clamp(transform.position.z, _zMinPos, _zMaxPos);
 
         if (newX != transform.position.x || newY != transform.position.y || newZ != transform.position.z)
         {

@@ -257,12 +257,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea732510c6a1a4040b36c298a82d8510, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 3.5
-  _verticalSpeed: 10
+  _speed: 7
+  _verticalSpeed: 15
   _rotationSpeed: 10
   _maxHeight: 12
   _minHeight: 2
-  _adjustedMapSize: 10.5
+  _xMinPos: 0
+  _xMaxPos: 40
+  _zMinPos: -30
+  _zMaxPos: 10
 --- !u!4 &22321587
 Transform:
   m_ObjectHideFlags: 0
@@ -688,7 +691,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 0.75, y: 0.75, z: 0.75}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -705,7 +708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4afa82ae3200b82408d605c3dbdd1e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damping: 0
+  Damping: 0.75
 --- !u!1 &1357188066
 GameObject:
   m_ObjectHideFlags: 0
