@@ -370,7 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db78596e72e3d6e4c8fa10e2e12f5a7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourcesAmount: 00000000000000000000000000000000
+  _resourcesAmount: 0a0000000a0000000a00000000000000
   _zoneLM:
     serializedVersion: 2
     m_Bits: 256
@@ -5440,6 +5440,7 @@ MonoBehaviour:
   - {r: 1, g: 0.05505685, b: 0.0039215684, a: 1}
   - {r: 1, g: 0.0039215684, b: 0.9291216, a: 1}
   - {r: 0.4910698, g: 0.0039215684, b: 1, a: 1}
+  _playerScr: {fileID: 22321588}
 --- !u!114 &1471434400 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 867143908599849243, guid: 9a789f59b1c606f4a823255ce23dc078,

@@ -15,3 +15,5 @@ MonoBehaviour:
   zoneIconSprite: {fileID: 0}
   zoneName: Mine Zone
   maximumUnitsPerLevel: 030000000400000005000000
+  resourceNeededForUpgrade: 010000000100000001000000
+  resourceQuantNeededForUpgrade: 010000000300000006000000

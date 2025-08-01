@@ -5,15 +5,14 @@ public class ZResourceGen : Zone
     [SerializeField] protected int _resourceToGenIndex;
     [SerializeField] private int[] _resourceQuantityGeneratedPerLevel = new int[3];
 
-    public int GetResourceQuantGenPerLevel(int level)
+    public override void ExtraUIInfoUpdate()
     {
-        if (level > _resourceQuantityGeneratedPerLevel.Length - 1) return -1;
-        return _resourceQuantityGeneratedPerLevel[level];
+        UIManager.Singleton.DisplayResourceGeneratingZoneInfo(_resourceToGenIndex,
+                                                              _resourceQuantityGeneratedPerLevel[_zoneLevel]);
     }
 
-    public override void Select()
+    protected override void OnLoopCompletedAction()
     {
-        base.Select();
-        UIManager.Singleton.DisplayResourceGeneratingZoneInfo(_resourceToGenIndex, _resourceQuantityGeneratedPerLevel[_zoneLevel]);
+
     }
 }

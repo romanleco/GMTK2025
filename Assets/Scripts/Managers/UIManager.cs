@@ -33,6 +33,7 @@ public class UIManager : MonoSingleton<UIManager>
     [Header("Sprite References")]
     [SerializeField] private Sprite[] _resourceIconSprites = new Sprite[4];
     [SerializeField] private Color[] _resourceIconColors = new Color[4];
+    private Zone _selectedZone;
 
 
     void Start()
@@ -59,7 +60,8 @@ public class UIManager : MonoSingleton<UIManager>
     public void DisplayZoneBaseInfo(ZoneSO zoneInfo,
                                 int unitsCount,
                                 int level,
-                                int tribeIndex)
+                                int tribeIndex,
+                                Zone zoneScr)
     {
         if (_zoneMenu.activeSelf == false) _zoneMenu.SetActive(true);
 
@@ -69,13 +71,10 @@ public class UIManager : MonoSingleton<UIManager>
 
         _zoneLevelText.text = "Lvl. " + (level + 1).ToString() + "/" + zoneInfo.maximumUnitsPerLevel.Length.ToString();
         _upgradeSection.SetActive(level + 1 < zoneInfo.maximumUnitsPerLevel.Length);
-        if (zoneInfo.resourceNeededForUpgrade.Length > level)
-        {
-            _resourceNeededForUpgradeIcon.sprite = _resourceIconSprites[zoneInfo.resourceNeededForUpgrade[level]];
-            _resourceNeededForUpgradeIcon.color = _resourceIconColors[zoneInfo.resourceNeededForUpgrade[level]];
-        }
-        if (zoneInfo.resourceQuantNeededForUpgrade.Length > level)
-            _resourceNeededForUpgradeQuantityText.text = "x" + zoneInfo.resourceQuantNeededForUpgrade[level].ToString(); 
+        
+        _resourceNeededForUpgradeIcon.sprite = _resourceIconSprites[zoneInfo.resourceNeededForUpgrade[level]];
+        _resourceNeededForUpgradeIcon.color = _resourceIconColors[zoneInfo.resourceNeededForUpgrade[level]];
+        _resourceNeededForUpgradeQuantityText.text = "x" + zoneInfo.resourceQuantNeededForUpgrade[level].ToString();
 
         _unitsInZoneText.text = "Units " + unitsCount.ToString() + "/" + zoneInfo.maximumUnitsPerLevel[level];
 
@@ -83,6 +82,8 @@ public class UIManager : MonoSingleton<UIManager>
         {
             _unitsButtons[i].gameObject.SetActive(i + 1 <= unitsCount);
         }
+
+        _selectedZone = zoneScr;
     }
 
     public void DisplayResourceGeneratingZoneInfo(int resourceGeneratedIndex, int resourceGeneratedQuantity)
@@ -108,10 +109,7 @@ public class UIManager : MonoSingleton<UIManager>
         Debug.Log("Unit Button Clicked | Index: " + buttonIndex);
     }
 
-    private void UpgradeZoneButton()
-    {
-        Debug.Log($"Upgrade Zone Button Clicked | T: {Time.time}");
-    }
+    private void UpgradeZoneButton() => _selectedZone.UpgradeZone(GameManager.PLAYER_TRIBE_INDEX);
 
     private void GenerateUnitsButton()
     {

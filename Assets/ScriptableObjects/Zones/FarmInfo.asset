@@ -15,3 +15,5 @@ MonoBehaviour:
   zoneIconSprite: {fileID: 0}
   zoneName: Farm Zone
   maximumUnitsPerLevel: 030000000400000005000000
+  resourceNeededForUpgrade: 010000000100000002000000
+  resourceQuantNeededForUpgrade: 010000000400000003000000

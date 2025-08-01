@@ -15,3 +15,5 @@ MonoBehaviour:
   zoneIconSprite: {fileID: 0}
   zoneName: Forest Zone
   maximumUnitsPerLevel: 030000000400000005000000
+  resourceNeededForUpgrade: 010000000200000002000000
+  resourceQuantNeededForUpgrade: 020000000600000004000000

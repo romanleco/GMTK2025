@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
                 zoneScr.Select();
             }
         }
-        else if(EventSystem.current.IsPointerOverGameObject() == false)
+        else if (EventSystem.current.IsPointerOverGameObject() == false)
             UIManager.Singleton.CloseZoneMenu();
     }
 
@@ -46,4 +46,6 @@ public class Player : MonoBehaviour
         }
         UIManager.Singleton.UpdateResourceCount(resourceIndex, _resourcesAmount[resourceIndex]);
     }
+
+    public int[] GetResources() => _resourcesAmount;
 }
