@@ -71,7 +71,7 @@ public class UIManager : MonoSingleton<UIManager>
 
         _zoneLevelText.text = "Lvl. " + (level + 1).ToString() + "/" + zoneInfo.maximumUnitsPerLevel.Length.ToString();
         _upgradeSection.SetActive(level + 1 < zoneInfo.maximumUnitsPerLevel.Length);
-        
+
         _resourceNeededForUpgradeIcon.sprite = _resourceIconSprites[zoneInfo.resourceNeededForUpgrade[level]];
         _resourceNeededForUpgradeIcon.color = _resourceIconColors[zoneInfo.resourceNeededForUpgrade[level]];
         _resourceNeededForUpgradeQuantityText.text = "x" + zoneInfo.resourceQuantNeededForUpgrade[level].ToString();
@@ -113,7 +113,11 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void GenerateUnitsButton()
     {
-        Debug.Log($"Generate Units Button Clicked | T: {Time.time}");
+        ZSettlement settlementZoneScr = _selectedZone.GetComponent<ZSettlement>();
+        if (settlementZoneScr != null)
+        {
+            settlementZoneScr.GenerateUnit(GameManager.PLAYER_TRIBE_INDEX);
+        }
     }
 
     public void CloseZoneMenu() => _zoneMenu.SetActive(false);

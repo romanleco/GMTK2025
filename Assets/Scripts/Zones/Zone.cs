@@ -8,10 +8,28 @@ public class Zone : MonoBehaviour
     [SerializeField] protected (int, int) _indexesInGrid;
     protected int _ownerTribeIndex;
     protected int _zoneLevel = 0;
-    protected List<GameObject> _unitsInZone = new List<GameObject>();
+    protected List<Unit> _unitsInZone = new List<Unit>();
+    [SerializeField] private Transform _unitPatrollingPositionsHolder;
+    [SerializeField] private Transform[] _unitPatrollingPositions;
 
     void OnEnable() => LoopTimerManager.OnLoopComplete += OnLoopCompletedAction;
     void OnDisable() => LoopTimerManager.OnLoopComplete -= OnLoopCompletedAction;
+
+    protected virtual void Start()
+    {
+        int i = 0;
+        foreach (Transform t in _unitPatrollingPositionsHolder)
+        {
+            _unitPatrollingPositions[i] = t.GetChild(0);
+            i++;
+        }
+    }
+
+    void Update()
+    {
+        if (_unitsInZone.Count > 0)
+            _unitPatrollingPositionsHolder.Rotate(Vector3.up * 16 * Time.deltaTime, Space.Self);
+    }
 
     protected virtual void OnLoopCompletedAction()
     {
@@ -51,6 +69,22 @@ public class Zone : MonoBehaviour
         }
 
         return false;
+    }
+
+    protected Transform GetAvailablePatrollingPosition()
+    {
+        for (int i = 0; i < _unitPatrollingPositions.Length; i++)
+        {
+            if (_unitPatrollingPositions[i].childCount == 0)
+                return _unitPatrollingPositions[i];
+        }
+
+        return null;
+    }
+
+    public void UnitEnterZone(Unit unitScr)
+    {
+        Debug.Log($"UNIT ENTER ZONE | T: {Time.time}");
     }
 
     public ZoneSO GetZoneInfo() => _zoneInfo;

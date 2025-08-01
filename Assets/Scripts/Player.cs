@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,6 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int[] _resourcesAmount = new int[4];
     //0 = Wheat; 1 = Wood; 2 = Minerals; 3 = Units;
     [SerializeField] private LayerMask _zoneLM;
+    private List<Unit> _playerUnits = new List<Unit>();
 
     void Update()
     {
@@ -46,6 +48,8 @@ public class Player : MonoBehaviour
         }
         UIManager.Singleton.UpdateResourceCount(resourceIndex, _resourcesAmount[resourceIndex]);
     }
+
+    public void AddToPlayerUnits(Unit unitScr) => _playerUnits.Add(unitScr);
 
     public int[] GetResources() => _resourcesAmount;
 }
