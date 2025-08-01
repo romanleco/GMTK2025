@@ -22,6 +22,6 @@ public class LoopTimerManager : MonoSingleton<LoopTimerManager>
 
         _loopCompletionPercentage = (Time.time - (_loopTimer - LoopTimeS)) / LoopTimeS;
         UIManager.Singleton.UpdateLoopCompletion(_loopCompletionPercentage);
-        Debug.Log($"Loop Completion Percentage: {_loopCompletionPercentage}");
+        // Debug.Log($"Loop Completion Percentage: {_loopCompletionPercentage}");
     }
 }

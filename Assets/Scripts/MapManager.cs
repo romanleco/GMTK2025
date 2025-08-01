@@ -19,7 +19,7 @@ public class MapManager : MonoSingleton<MapManager>
     public const int gridSize = 20;
     public const float gridCellSize = 2;
     private Vector3[,] _gridPositions = new Vector3[gridSize, gridSize]; //The position of each cell on the grid
-    private int[,] _gridFactionControl = new int[gridSize, gridSize]; //What faction controls the tile; 0 = none
+    private int[,] _gridTribeControl = new int[gridSize, gridSize]; //What faction controls the tile; 0 = none
     private int[,] _gridZones = new int[gridSize, gridSize];
 
     void Start()

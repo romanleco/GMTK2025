@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
+    public const int TRIBES_NUMBER = 4;
+    [SerializeField] private Color[] _tribeColors = new Color[TRIBES_NUMBER + 1];
     void Start()
     {
         DataContainer loadedData = SaveManager.Singleton.Load();
-        if(loadedData != null)
+        if (loadedData != null)
         {
             Debug.Log("Save file found");
         }
@@ -18,10 +20,5 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-    public Vector3 playerPosition {get; private set;}
-
-    public void SetPlayerPosition(Vector3 position)
-    {
-        playerPosition = position;
-    } 
+    public Color GetTribeColor(int index) => _tribeColors[index];
 }

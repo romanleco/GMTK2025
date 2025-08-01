@@ -60,7 +60,7 @@ public class TopViewCC : MonoBehaviour
         if(_faceMouseDirection)    
             FaceMouseDirection();
             
-        GameManager.Singleton.SetPlayerPosition(transform.position);
+        // GameManager.Singleton.SetPlayerPosition(transform.position);
     }
 
     private void CalculateMovement()
