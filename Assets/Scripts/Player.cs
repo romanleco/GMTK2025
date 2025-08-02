@@ -54,53 +54,56 @@ public class Player : MonoBehaviour
 
     public void SelectUnit(Unit selectedUnit)
     {
-        if (_selectedUnits.Count < _selectedUnitButtons.Length)
+        if (_selectedUnits.Contains(selectedUnit))
         {
-            if (_selectedUnits.Contains(selectedUnit))
+            _selectedUnits.Remove(selectedUnit);
+            ResetSelectedUnitButtons();
+        }
+        else
+        {
+            if (_selectedUnits.Count < _selectedUnitButtons.Length)
             {
-                _selectedUnits.Remove(selectedUnit);
-                for (int i = 0; i < _selectedUnitButtons.Length; i++)
+                _selectedUnits.Add(selectedUnit);
+                ResetSelectedUnitButtons();
+            }
+            else
+                Debug.Log("Maximum Units Selected");
+        }
+
+        //make the units that are already selected selected in the zone unitsInZone menu
+    }
+
+    private void ResetSelectedUnitButtons()
+    {
+        for (int i = 0; i < _selectedUnitButtons.Length; i++)
+        {
+            if (_selectedUnits.Count > 0) //Is there any selected units?
+            {
+                if (i <= _selectedUnits.Count - 1)
                 {
-                    if (_selectedUnitButtons[i].gameObject.activeSelf)
+                    _selectedUnitButtons[i].gameObject.SetActive(true);
+                    _selectedUnitButtons[i].onClick.RemoveAllListeners();
+                    int assignementInt = i;
+                    _selectedUnitButtons[i].onClick.AddListener(() =>
                     {
-                        _selectedUnitButtons[i].onClick.RemoveAllListeners();
-                        if (_selectedUnits.Count > 0)
-                        {
-                            if (i <= _selectedUnits.Count - 1)
-                            {
-                                _selectedUnitButtons[i].gameObject.SetActive(true);
-                                _selectedUnitButtons[i].onClick.AddListener(() =>
-                                {
-                                    _selectedUnits.Remove(_selectedUnits[i]);
-                                    _selectedUnitButtons[i].onClick.RemoveAllListeners();
-                                    _selectedUnitButtons[i].gameObject.SetActive(false);
-                                });
-                            }
-                            else
-                                _selectedUnitButtons[i].gameObject.SetActive(false);
-                        }
-                        else
-                            _selectedUnitButtons[i].gameObject.SetActive(false);
-                    }
+                        // Debug.Log($"SELECTED UNITS COUNT: {_selectedUnits.Count}| INDEX: {i}");
+                        _selectedUnits.Remove(_selectedUnits[assignementInt]);
+                        ResetSelectedUnitButtons();
+                    });
+                }
+                else
+                {
+                    _selectedUnitButtons[i].onClick.RemoveAllListeners();
+                    _selectedUnitButtons[i].gameObject.SetActive(false);
                 }
             }
             else
             {
-                _selectedUnits.Add(selectedUnit);
-                Debug.Log($"Selected Units Count: {_selectedUnits.Count}");
-                _selectedUnitButtons[_selectedUnits.Count - 1].gameObject.SetActive(true);
-                _selectedUnitButtons[_selectedUnits.Count - 1].onClick.AddListener(() =>
-                {
-                    _selectedUnits.Remove(selectedUnit);
-                    _selectedUnitButtons[_selectedUnits.Count - 1].onClick.RemoveAllListeners();
-                    _selectedUnitButtons[_selectedUnits.Count - 1].gameObject.SetActive(false);
-                });
+                _selectedUnitButtons[i].onClick.RemoveAllListeners();
+                _selectedUnitButtons[i].gameObject.SetActive(false);
             }
+            
         }
-        else
-            Debug.Log("Maximum Units Selected");
-
-        //make the units that are already selected selected in the zone unitsInZone menu
     }
 
     public void AddToPlayerUnits(Unit unitScr) => _playerUnits.Add(unitScr);
