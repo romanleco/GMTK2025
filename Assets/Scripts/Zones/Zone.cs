@@ -44,6 +44,11 @@ public class Zone : MonoBehaviour
         ExtraUIInfoUpdate();
     }
 
+    public void SelectUnit(int unitIndex)
+    {
+        GameManager.Singleton.GetPlayerScript().SelectUnit(_unitsInZone[unitIndex]);
+    }
+
     public virtual void ExtraUIInfoUpdate() { }
 
     public virtual bool UpgradeZone(int tribeIndex)

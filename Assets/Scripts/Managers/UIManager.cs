@@ -41,7 +41,8 @@ public class UIManager : MonoSingleton<UIManager>
         int buttonIndex = 0;
         foreach (Button uB in _unitsButtons)
         {
-            uB.onClick.AddListener(() => UnitButton(buttonIndex));
+            int assignementInt = buttonIndex; //The reference to the local variable gets lost so it doesn't update the rest of the buttons
+            uB.onClick.AddListener(() => UnitButton(assignementInt));
             buttonIndex++;
         }
 
@@ -106,7 +107,7 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void UnitButton(int buttonIndex)
     {
-        Debug.Log("Unit Button Clicked | Index: " + buttonIndex);
+        _selectedZone.SelectUnit(buttonIndex);
     }
 
     private void UpgradeZoneButton() => _selectedZone.UpgradeZone(GameManager.PLAYER_TRIBE_INDEX);
