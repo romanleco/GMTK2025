@@ -13,6 +13,11 @@ public class ZResourceGen : Zone
 
     protected override void OnLoopCompletedAction()
     {
+        base.OnLoopCompletedAction();
 
+        if (_ownerTribeIndex == GameManager.PLAYER_TRIBE_INDEX)
+        {
+            GameManager.Singleton.GetPlayerScript().AddToResource(_resourceToGenIndex, _resourceQuantityGeneratedPerLevel[_zoneLevel]);
+        }
     }
 }

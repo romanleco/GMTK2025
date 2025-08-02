@@ -35,6 +35,14 @@ public class Zone : MonoBehaviour
 
     protected virtual void OnLoopCompletedAction()
     {
+        if (_unitsInZone.Count > 0)
+        {
+            int newTribeIndex = _unitsInZone[0].TribeIndex;
+            if (newTribeIndex != _ownerTribeIndex)
+            {
+                _ownerTribeIndex = newTribeIndex;
+            }
+        }
         //If zone conquered
         //give resource to the corresponding tribe depending on level (by _zoneInfo)
     }
@@ -91,7 +99,31 @@ public class Zone : MonoBehaviour
 
     public void UnitEnterZone(Unit unitScr)
     {
-        Debug.Log($"UNIT ENTER ZONE | T: {Time.time}");
+        if(_unitsMovingTowardsZone.Contains(unitScr))
+            _unitsMovingTowardsZone.Remove(unitScr);
+
+        if (_unitsInZone.Count > 0)
+        {
+            if (_unitsInZone[0].TribeIndex != unitScr.TribeIndex)
+            {
+                _unitsInZone[_unitsInZone.Count - 1].Die();
+                unitScr.Die();
+            }
+            else
+                ReceiveUnitInZone(unitScr);
+        }
+        else
+            ReceiveUnitInZone(unitScr);
+    }
+
+    private void ReceiveUnitInZone(Unit unitScr)
+    {
+        _unitsInZone.Add(unitScr);
+        unitScr.transform.parent = GetAvailablePatrollingPosition();
+        unitScr.transform.localPosition = Vector3.zero;
+        unitScr.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
+        unitScr.SetCurrentInZone(this);
     }
 
     public ZoneSO GetZoneInfo() => _zoneInfo;

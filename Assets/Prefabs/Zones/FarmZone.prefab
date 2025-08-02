@@ -61,7 +61,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _resourceToGenIndex: 0
-  _resourceQuantityGeneratedPerLevel: 010000000200000004000000
+  _resourceQuantityGeneratedPerLevel: 04000000070000000a000000
 --- !u!65 &5187009029495594087
 BoxCollider:
   m_ObjectHideFlags: 0

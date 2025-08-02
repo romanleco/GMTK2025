@@ -34,6 +34,7 @@ public class ZSettlement : Zone
                     _unitsGenerated.Add(newUnitScr);
                     _unitsInZone.Add(newUnitScr);
                     GameManager.Singleton.GetPlayerScript().SubtractToResource(0, _unitGenerationCost);
+                    GameManager.Singleton.GetPlayerScript().AddToResource(3, 1); //subtracts to units from tribe
                     GameManager.Singleton.GetPlayerScript().AddToPlayerUnits(newUnitScr);
 
                     UIManager.Singleton.RefreshZoneUI();
@@ -49,4 +50,14 @@ public class ZSettlement : Zone
 
         return false;
     }
+
+    protected override void OnLoopCompletedAction()
+    {
+        int prevOwnerTribeIndex = _ownerTribeIndex;
+        base.OnLoopCompletedAction();
+        if (_ownerTribeIndex != prevOwnerTribeIndex)
+            _flagMeshRenderer.material.color = GameManager.Singleton.GetTribeColor(_ownerTribeIndex);
+    }
+
+    public void RemoveUnitFromUnitsGenerated(Unit unitScr) => _unitsGenerated.Remove(unitScr);
 }

@@ -5,7 +5,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private MeshRenderer _mR;
     [SerializeField] private float _unitSpeed = 4f;
     private Zone _destinationZone;
-    private Zone _zoneOfGeneration;
+    private ZSettlement _zoneOfGeneration;
     private Zone _currentInZone;
     private bool _unitMoving;
     public int TribeIndex { get; private set; }
@@ -46,6 +46,15 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void SetZoneOfGeneration(Zone zoneScr) => _zoneOfGeneration = zoneScr;
+    public void Die()
+    {
+        _zoneOfGeneration.RemoveUnitFromUnitsGenerated(this);
+        _currentInZone.RemoveUnitFromZone(this);
+        GameManager.Singleton.GetPlayerScript().SubtractToResource(3, 1); //subtracts to units from tribe
+
+        Destroy(this.gameObject);
+    }
+
+    public void SetZoneOfGeneration(ZSettlement zoneScr) => _zoneOfGeneration = zoneScr;
     public void SetCurrentInZone(Zone zoneScr) => _currentInZone = zoneScr;
 }
