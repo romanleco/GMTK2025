@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class Zone : MonoBehaviour
 {
@@ -13,6 +12,7 @@ public class Zone : MonoBehaviour
     protected List<Unit> _unitsMovingTowardsZone = new List<Unit>();
     [SerializeField] private Transform _unitPatrollingPositionsHolder;
     [SerializeField] private Transform[] _unitPatrollingPositions;
+    private int _tribeColorUIDisplayIndex = -1;
 
     void OnEnable() => LoopTimerManager.OnLoopComplete += OnLoopCompletedAction;
     void OnDisable() => LoopTimerManager.OnLoopComplete -= OnLoopCompletedAction;
@@ -41,6 +41,11 @@ public class Zone : MonoBehaviour
             if (newTribeIndex != _ownerTribeIndex)
             {
                 _ownerTribeIndex = newTribeIndex;
+                if (_tribeColorUIDisplayIndex == -1)
+                {
+                    _tribeColorUIDisplayIndex = WorldSpaceUIManager.Singleton.GetColorDisplayIndex(transform.position + (Vector3.up * 1.5f));
+                }
+                WorldSpaceUIManager.Singleton.ChangeTribeColorDisplay(_tribeColorUIDisplayIndex, _ownerTribeIndex);
             }
         }
         //If zone conquered

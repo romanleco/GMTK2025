@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class MapManager : MonoSingleton<MapManager>
@@ -17,7 +16,7 @@ public class MapManager : MonoSingleton<MapManager>
     [Header("Tile Visualization")]
     [SerializeField] private GameObject _cellPositionVisualizer;
     public const int gridSize = 20;
-    public const float gridCellSize = 2;
+    public const float gridCellSize = 2.25f;
     private Vector3[,] _gridPositions = new Vector3[gridSize, gridSize]; //The position of each cell on the grid
     private int[,] _gridTribeControl = new int[gridSize, gridSize]; //What faction controls the tile; 0 = none
     private int[,] _gridZones = new int[gridSize, gridSize];
