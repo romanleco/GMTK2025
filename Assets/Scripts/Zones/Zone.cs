@@ -13,6 +13,7 @@ public class Zone : MonoBehaviour
     [SerializeField] private Transform _unitPatrollingPositionsHolder;
     [SerializeField] private Transform[] _unitPatrollingPositions;
     private int _tribeColorUIDisplayIndex = -1;
+    public bool IsZoneMaxLevel { get; private set; } = false;
 
     void OnEnable() => LoopTimerManager.OnLoopComplete += OnLoopCompletedAction;
     void OnDisable() => LoopTimerManager.OnLoopComplete -= OnLoopCompletedAction;
@@ -68,24 +69,33 @@ public class Zone : MonoBehaviour
 
     public virtual bool UpgradeZone(int tribeIndex)
     {
-        if (tribeIndex == GameManager.PLAYER_TRIBE_INDEX)
-        {
-            if (_zoneLevel + 1 >= _zoneInfo.maximumUnitsPerLevel.Length) return false; //Max Level
+        if (IsZoneMaxLevel) return false; //Max Level
 
-            int resourceQuantNeeded = _zoneInfo.resourceQuantNeededForUpgrade[_zoneLevel];
-            if (GameManager.Singleton.GetPlayerScript().GetResources()[_zoneInfo.resourceNeededForUpgrade[_zoneLevel]] >= resourceQuantNeeded)
+        int resourceQuantNeeded = _zoneInfo.resourceQuantNeededForUpgrade[_zoneLevel];
+
+        int resourceQuant;
+        if (tribeIndex == GameManager.PLAYER_TRIBE_INDEX)
+            resourceQuant = GameManager.Singleton.GetPlayerScript().GetResources()[_zoneInfo.resourceNeededForUpgrade[_zoneLevel]];
+        else
+            resourceQuant = GameManager.Singleton.GetTribeScript(tribeIndex).GetResources()[_zoneInfo.resourceNeededForUpgrade[_zoneLevel]];
+
+        if (resourceQuant >= resourceQuantNeeded)
+        {
+            _zoneLevel++;
+
+            if (tribeIndex == GameManager.PLAYER_TRIBE_INDEX)
             {
                 GameManager.Singleton.GetPlayerScript().SubtractToResource(_zoneInfo.resourceNeededForUpgrade[_zoneLevel], resourceQuantNeeded);
-                _zoneLevel++;
                 UIManager.Singleton.DisplayZoneBaseInfo(_zoneInfo, _unitsInZone.Count, _zoneLevel, _ownerTribeIndex, this);
                 ExtraUIInfoUpdate();
-                return true;
             }
-        }
-        else
-        {
-            //Tribe AI is trying to upgrade this
-            //is the tribe owner of this zone??
+            else
+                GameManager.Singleton.GetTribeScript(tribeIndex).ResourceTransaction(_zoneInfo.resourceNeededForUpgrade[_zoneLevel], resourceQuantNeeded, false);
+
+            if (IsZoneMaxLevel == false)
+                if (_zoneLevel + 1 >= _zoneInfo.maximumUnitsPerLevel.Length) IsZoneMaxLevel = true;
+
+            return true;
         }
 
         return false;

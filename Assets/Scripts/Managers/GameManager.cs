@@ -9,6 +9,7 @@ public class GameManager : MonoSingleton<GameManager>
     public const int TRIBES_NUMBER = 4;
     [SerializeField] private Color[] _tribeColors = new Color[TRIBES_NUMBER + 1];
     [SerializeField] private Player _playerScr;
+    [SerializeField] private Tribe[] _tribes = new Tribe[TRIBES_NUMBER - 1];
     void Start()
     {
         DataContainer loadedData = SaveManager.Singleton.Load();
@@ -25,5 +26,6 @@ public class GameManager : MonoSingleton<GameManager>
 
     public Color GetTribeColor(int index) => _tribeColors[index];
     public Player GetPlayerScript() => _playerScr;
+    public Tribe GetTribeScript(int tribeIndex) => _tribes[tribeIndex - 2];
 
 }

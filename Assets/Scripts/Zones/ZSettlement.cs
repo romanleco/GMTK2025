@@ -16,36 +16,49 @@ public class ZSettlement : Zone
 
     public bool GenerateUnit(int tribeIndex)
     {
+        if (_maxUnitsToGeneratePerLevel[_zoneLevel] <= _unitsGenerated.Count) return false; //If the zone has generated less than the maximum
+
+        int wheatQuant;
         if (tribeIndex == GameManager.PLAYER_TRIBE_INDEX)
+            wheatQuant = GameManager.Singleton.GetPlayerScript().GetResources()[0];
+        else
+            wheatQuant = GameManager.Singleton.GetTribeScript(tribeIndex).GetResources()[0];
+
+        if (wheatQuant >= _unitGenerationCost)
         {
-            if (_maxUnitsToGeneratePerLevel[_zoneLevel] <= _unitsGenerated.Count) return false; //If the zone has generated less than the maximum
-
-            if (GameManager.Singleton.GetPlayerScript().GetResources()[0] >= _unitGenerationCost)
+            Transform _aPP = GetAvailablePatrollingPosition();
+            if (_aPP != null)
             {
-                Transform _aPP = GetAvailablePatrollingPosition();
-                if (_aPP != null)
-                {
-                    Unit newUnitScr = Instantiate(_unitPrefab, _aPP);
-                    newUnitScr.SetTribe(tribeIndex);
-                    newUnitScr.transform.localPosition = Vector3.zero;
-                    newUnitScr.SetZoneOfGeneration(this);
-                    newUnitScr.SetCurrentInZone(this);
+                Unit newUnitScr = Instantiate(_unitPrefab, _aPP);
+                newUnitScr.SetTribe(tribeIndex);
+                newUnitScr.transform.localPosition = Vector3.zero;
+                newUnitScr.SetZoneOfGeneration(this);
+                newUnitScr.SetCurrentInZone(this);
 
-                    _unitsGenerated.Add(newUnitScr);
-                    _unitsInZone.Add(newUnitScr);
-                    GameManager.Singleton.GetPlayerScript().SubtractToResource(0, _unitGenerationCost);
-                    GameManager.Singleton.GetPlayerScript().AddToResource(3, 1); //subtracts to units from tribe
-                    GameManager.Singleton.GetPlayerScript().AddToPlayerUnits(newUnitScr);
+                _unitsGenerated.Add(newUnitScr);
+                _unitsInZone.Add(newUnitScr);
+
+                if (tribeIndex == GameManager.PLAYER_TRIBE_INDEX)
+                {
+                    Player playerScr = GameManager.Singleton.GetPlayerScript();
+
+                    playerScr.SubtractToResource(0, _unitGenerationCost);
+                    playerScr.AddToResource(3, 1); //subtracts to units from tribe
+                    playerScr.AddToPlayerUnits(newUnitScr);
 
                     UIManager.Singleton.RefreshZoneUI();
-
-                    return true;
                 }
-            }
-        }
-        else
-        {
+                else
+                {
+                    Tribe tribeScr = GameManager.Singleton.GetTribeScript(tribeIndex);
 
+                    tribeScr.ResourceTransaction(0, _unitGenerationCost, false);
+                    tribeScr.ResourceTransaction(3, 1);
+                    tribeScr.AddToTribeUnits(newUnitScr);
+                }
+
+                return true;
+            }
         }
 
         return false;

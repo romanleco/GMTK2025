@@ -16,8 +16,8 @@ public class ZResourceGen : Zone
         base.OnLoopCompletedAction();
 
         if (_ownerTribeIndex == GameManager.PLAYER_TRIBE_INDEX)
-        {
             GameManager.Singleton.GetPlayerScript().AddToResource(_resourceToGenIndex, _resourceQuantityGeneratedPerLevel[_zoneLevel]);
-        }
+        else
+            GameManager.Singleton.GetTribeScript(_ownerTribeIndex).ResourceTransaction(_resourceToGenIndex, _resourceQuantityGeneratedPerLevel[_zoneLevel]);
     }
 }
