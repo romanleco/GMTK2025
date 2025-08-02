@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Zone : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Zone : MonoBehaviour
     protected int _ownerTribeIndex;
     protected int _zoneLevel = 0;
     protected List<Unit> _unitsInZone = new List<Unit>();
+    protected List<Unit> _unitsMovingTowardsZone = new List<Unit>();
     [SerializeField] private Transform _unitPatrollingPositionsHolder;
     [SerializeField] private Transform[] _unitPatrollingPositions;
 
@@ -93,4 +95,33 @@ public class Zone : MonoBehaviour
     }
 
     public ZoneSO GetZoneInfo() => _zoneInfo;
+
+    public void AddUnitMovingToZone(Unit unit) => _unitsMovingTowardsZone.Add(unit);
+    public void RemoveUnitFromZone(Unit unit) => _unitsInZone.Remove(unit);
+    public int GetUnitsInAndMovingTowardsZone(int tribeIndex)
+    {
+        int res = 0;
+
+        for (int i = 0; i < _unitsInZone.Count; i++)
+        {
+            if (_unitsInZone[i].TribeIndex == tribeIndex) res++;
+        }
+
+        for (int e = 0; e < _unitsMovingTowardsZone.Count; e++)
+        {
+            if (_unitsMovingTowardsZone[e].TribeIndex == tribeIndex) res++;
+        }
+
+        return res;
+    }
+
+    public int GetPossibleNumberOfUnitsToSend(int tribeIndex)
+    {
+        int res = 0;
+
+        res = _zoneInfo.maximumUnitsPerLevel[_zoneLevel];
+        res -= GetUnitsInAndMovingTowardsZone(tribeIndex);
+
+        return res;
+    }
 }

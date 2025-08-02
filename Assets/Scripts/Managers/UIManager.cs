@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Video;
+using System.Collections.Generic;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -103,6 +103,11 @@ public class UIManager : MonoSingleton<UIManager>
         if (_unitsGenerationSection.activeSelf == false) _unitsGenerationSection.SetActive(true);
 
         _generatedUnitsText.text = unitsGeneratedCount.ToString() + "/" + maxUnitsToGenerate.ToString();
+    }
+
+    public void RefreshZoneUI()
+    {
+        if (_selectedZone != null) _selectedZone.Select();
     }
 
     private void UnitButton(int buttonIndex)

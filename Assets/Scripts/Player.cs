@@ -16,6 +16,10 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
             SelectZone();
+
+        if (Input.GetMouseButtonDown(1))
+            SendUnitsToZone();
+            
     }
 
     private void SelectZone()
@@ -33,6 +37,46 @@ public class Player : MonoBehaviour
         }
         else if (EventSystem.current.IsPointerOverGameObject() == false)
             UIManager.Singleton.CloseZoneMenu();
+    }
+
+    private List<Unit> _unitsCleaner = new List<Unit>();
+    private void SendUnitsToZone()
+    {
+        if (_selectedUnits.Count <= 0) return;
+
+        Ray raySelector = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit raycastHit;
+
+        if (Physics.Raycast(raySelector, out raycastHit, Mathf.Infinity, _zoneLM))
+        {
+            Zone zoneScr = raycastHit.transform.GetComponent<Zone>();
+            if (zoneScr != null)
+            {
+                int unitsToSend = _selectedUnits.Count;
+                if (zoneScr.GetPossibleNumberOfUnitsToSend(GameManager.PLAYER_TRIBE_INDEX) < unitsToSend)
+                    unitsToSend = zoneScr.GetPossibleNumberOfUnitsToSend(GameManager.PLAYER_TRIBE_INDEX);
+
+                if (unitsToSend >= 1)
+                {
+                    for (int i = 0; i < unitsToSend; i++)
+                    {
+                        _selectedUnits[i].SetUnitDestination(zoneScr);
+                        zoneScr.AddUnitMovingToZone(_selectedUnits[i]);
+                        _unitsCleaner.Add(_selectedUnits[i]);
+                    }
+
+                    for (int e = 0; e < _unitsCleaner.Count; e++)
+                    {
+                        if (_selectedUnits.Contains(_unitsCleaner[e]))
+                            _selectedUnits.Remove(_unitsCleaner[e]);
+                    }
+                    _unitsCleaner.Clear();
+
+                    ResetSelectedUnitButtons();
+                    UIManager.Singleton.RefreshZoneUI();
+                }
+            }
+        }
     }
 
     public void AddToResource(int resourceIndex, int valueToAdd)

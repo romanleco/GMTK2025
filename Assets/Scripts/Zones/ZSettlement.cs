@@ -28,11 +28,15 @@ public class ZSettlement : Zone
                     Unit newUnitScr = Instantiate(_unitPrefab, _aPP);
                     newUnitScr.SetTribe(tribeIndex);
                     newUnitScr.transform.localPosition = Vector3.zero;
+                    newUnitScr.SetZoneOfGeneration(this);
+                    newUnitScr.SetCurrentInZone(this);
 
                     _unitsGenerated.Add(newUnitScr);
                     _unitsInZone.Add(newUnitScr);
                     GameManager.Singleton.GetPlayerScript().SubtractToResource(0, _unitGenerationCost);
                     GameManager.Singleton.GetPlayerScript().AddToPlayerUnits(newUnitScr);
+
+                    UIManager.Singleton.RefreshZoneUI();
 
                     return true;
                 }

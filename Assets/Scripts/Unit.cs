@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -7,33 +5,39 @@ public class Unit : MonoBehaviour
     [SerializeField] private MeshRenderer _mR;
     [SerializeField] private float _unitSpeed = 4f;
     private Zone _destinationZone;
-    private Vector3 _direction;
+    private Zone _zoneOfGeneration;
+    private Zone _currentInZone;
     private bool _unitMoving;
-    public int _tribeIndex { get; private set; }
+    public int TribeIndex { get; private set; }
 
     public void SetTribe(int tribeIndex)
     {
-        _tribeIndex = tribeIndex;
+        this.TribeIndex = tribeIndex;
         _mR.material.color = GameManager.Singleton.GetTribeColor(tribeIndex);
     }
 
     public void SetUnitDestination(Zone zoneScr)
     {
         _unitMoving = true;
+        transform.parent = null;
         _destinationZone = zoneScr;
-        _direction = zoneScr.transform.position - transform.position;
-        _direction.Normalize();
+
+        if (_currentInZone != null) _currentInZone.RemoveUnitFromZone(this);
+        _currentInZone = null;
+
+        Vector3 dir = transform.position - zoneScr.transform.position;
+        transform.rotation = Quaternion.LookRotation(dir);
     }
 
     void Update()
     {
-        if(_unitMoving)
+        if (_unitMoving)
             MoveTowardsDestination();
     }
 
     private void MoveTowardsDestination()
     {
-        transform.Translate(_direction * _unitSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, _destinationZone.transform.position, _unitSpeed * Time.deltaTime);
         if (Vector3.Distance(_destinationZone.transform.position, transform.position) < 0.05f)
         {
             _unitMoving = false;
@@ -41,4 +45,7 @@ public class Unit : MonoBehaviour
             _destinationZone.UnitEnterZone(this);
         }
     }
+
+    public void SetZoneOfGeneration(Zone zoneScr) => _zoneOfGeneration = zoneScr;
+    public void SetCurrentInZone(Zone zoneScr) => _currentInZone = zoneScr;
 }
