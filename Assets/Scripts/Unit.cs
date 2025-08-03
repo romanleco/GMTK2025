@@ -49,7 +49,8 @@ public class Unit : MonoBehaviour
     public void Die()
     {
         _zoneOfGeneration.RemoveUnitFromUnitsGenerated(this);
-        _currentInZone.RemoveUnitFromZone(this);
+        if(_currentInZone != null)
+            _currentInZone.RemoveUnitFromZone(this);
         GameManager.Singleton.GetPlayerScript().SubtractToResource(3, 1); //subtracts to units from tribe
 
         Destroy(this.gameObject);

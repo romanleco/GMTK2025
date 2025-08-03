@@ -41,7 +41,23 @@ public class Zone : MonoBehaviour
             int newTribeIndex = _unitsInZone[0].TribeIndex;
             if (newTribeIndex != _ownerTribeIndex)
             {
+                if (newTribeIndex != GameManager.PLAYER_TRIBE_INDEX)
+                {
+                    //Let the tribe know the zone is theirs
+                    GameManager.Singleton.GetTribeScript(newTribeIndex).AddToOwnedZones(_indexesInGrid.Item1,
+                                                                                        _indexesInGrid.Item2);
+
+                    if (_ownerTribeIndex != 0) //It was owned by another tribe
+                    {
+                        //let the tribe know the zone is no longer theirs
+                        GameManager.Singleton.GetTribeScript(_ownerTribeIndex).RemoveFromOwnedZones(_indexesInGrid.Item1,
+                                                                                                    _indexesInGrid.Item2);
+                    }
+                }
+
                 _ownerTribeIndex = newTribeIndex;
+                MapManager.Singleton.SetGridTribeControl(_indexesInGrid.Item1, _indexesInGrid.Item2, _ownerTribeIndex);
+
                 if (_tribeColorUIDisplayIndex == -1)
                 {
                     _tribeColorUIDisplayIndex = WorldSpaceUIManager.Singleton.GetColorDisplayIndex(transform.position + (Vector3.up * 1.5f));
@@ -95,6 +111,8 @@ public class Zone : MonoBehaviour
             if (IsZoneMaxLevel == false)
                 if (_zoneLevel + 1 >= _zoneInfo.maximumUnitsPerLevel.Length) IsZoneMaxLevel = true;
 
+            MapManager.Singleton.SetGridZoneLevel(_indexesInGrid.Item1, _indexesInGrid.Item2, _zoneLevel);
+
             return true;
         }
 
@@ -103,18 +121,23 @@ public class Zone : MonoBehaviour
 
     protected Transform GetAvailablePatrollingPosition()
     {
+        // for (int e = 0; e < _unitPatrollingPositionsHolder.childCount; e++)
+        // {
+        //     _unitPatrollingPositions[e] = _unitPatrollingPositionsHolder.GetChild(e);   
+        // }
+
         for (int i = 0; i < _unitPatrollingPositions.Length; i++)
-        {
-            if (_unitPatrollingPositions[i].childCount == 0)
-                return _unitPatrollingPositions[i];
-        }
+            {
+                if (_unitPatrollingPositions[i].childCount == 0)
+                    return _unitPatrollingPositions[i];
+            }
 
         return null;
     }
 
     public void UnitEnterZone(Unit unitScr)
     {
-        if(_unitsMovingTowardsZone.Contains(unitScr))
+        if (_unitsMovingTowardsZone.Contains(unitScr))
             _unitsMovingTowardsZone.Remove(unitScr);
 
         if (_unitsInZone.Count > 0)
@@ -171,4 +194,20 @@ public class Zone : MonoBehaviour
 
         return res;
     }
+
+    public void SetIndexesInGrid(int x, int z) => _indexesInGrid = (x, z);
+    public virtual void SetOwnedByTribe(int tribeIndex)
+    {
+        _ownerTribeIndex = tribeIndex;
+        if (_tribeColorUIDisplayIndex == -1)
+        {
+            _tribeColorUIDisplayIndex = WorldSpaceUIManager.Singleton.GetColorDisplayIndex(transform.position + (Vector3.up * 1.5f));
+        }
+        WorldSpaceUIManager.Singleton.ChangeTribeColorDisplay(_tribeColorUIDisplayIndex, _ownerTribeIndex);
+    }
+
+    public int GetUnitsCount() => _unitsInZone.Count;
+    public List<Unit> GetUnitsInZone() => _unitsInZone;
+    public (int, int) GetResourcesNeededForUpgrade() => (_zoneInfo.resourceNeededForUpgrade[_zoneLevel], _zoneInfo.resourceQuantNeededForUpgrade[_zoneLevel]);
+    public int AvailableUnits() => _unitsInZone.Count - ((int)(_zoneInfo.maximumUnitsPerLevel[_zoneLevel] / 3));
 }

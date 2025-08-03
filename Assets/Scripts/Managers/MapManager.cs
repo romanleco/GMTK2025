@@ -18,8 +18,10 @@ public class MapManager : MonoSingleton<MapManager>
     public const int gridSize = 20;
     public const float gridCellSize = 2.25f;
     private Vector3[,] _gridPositions = new Vector3[gridSize, gridSize]; //The position of each cell on the grid
-    private int[,] _gridTribeControl = new int[gridSize, gridSize]; //What faction controls the tile; 0 = none
-    private int[,] _gridZones = new int[gridSize, gridSize];
+    public int[,] GridTribeControl { get; private set; } = new int[gridSize, gridSize]; //What faction controls the tile; 0 = none
+    public int[,] GridZones { get; private set; } = new int[gridSize, gridSize]; // -1 = nothing, 0 = farm, 1 = forest, 2 = mine, 3 = settlement
+    public int[,] GridZonesLevels { get; private set; } = new int[gridSize, gridSize];
+    public Zone[,] GridZonesScr { get; private set; } = new Zone[gridSize, gridSize];
 
     void Start()
     {
@@ -53,6 +55,9 @@ public class MapManager : MonoSingleton<MapManager>
         int settlementsN = _nOfSettlements;
         int totalZones = farmN + forestN + minesN + settlementsN;
 
+        int[] tribeIndexes = { 1, 2, 3, 4 };
+        int currentTribeIndex = 0;
+
         List<(int, int)> cellsList = new(); // Make and fill List with all the cells in the grid (posX, posZ)
         for (int i = 0; i < gridSize; i++)
         {
@@ -75,51 +80,83 @@ public class MapManager : MonoSingleton<MapManager>
                 break;
             }
 
+            GameObject zoneGo; //Used for setting zone indexes in grid
+
             switch (zoneIndex)
             {
                 case 0:
-                    Instantiate(_farmZonePrefab,
+                    zoneGo = Instantiate(_farmZonePrefab,
                                 _gridPositions[cellsList[randIndex].Item1, cellsList[randIndex].Item2],
                                 Quaternion.identity);
-                    _gridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 0;
+                    GridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 0;
+                    GridZonesScr[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = zoneGo.GetComponent<Zone>();
                     farmN--;
                     break;
 
                 case 1:
-                    Instantiate(_forestZonePrefab,
+                    zoneGo = Instantiate(_forestZonePrefab,
                                 _gridPositions[cellsList[randIndex].Item1, cellsList[randIndex].Item2],
                                 Quaternion.identity);
-                    _gridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 1;
+                    GridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 1;
+                    GridZonesScr[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = zoneGo.GetComponent<Zone>();
                     forestN--;
                     break;
 
                 case 2:
-                    Instantiate(_mineZonePrefab,
+                    zoneGo = Instantiate(_mineZonePrefab,
                                 _gridPositions[cellsList[randIndex].Item1, cellsList[randIndex].Item2],
                                 Quaternion.identity);
-                    _gridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 2;
+                    GridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 2;
+                    GridZonesScr[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = zoneGo.GetComponent<Zone>();
                     minesN--;
                     break;
 
                 case 3:
-                    Instantiate(_settlementZonePrefab,
+                    zoneGo = Instantiate(_settlementZonePrefab,
                                 _gridPositions[cellsList[randIndex].Item1, cellsList[randIndex].Item2],
                                 Quaternion.identity);
-                    _gridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 3;
+                    GridZones[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = 3;
+                    GridZonesScr[cellsList[randIndex].Item1, cellsList[randIndex].Item2] = zoneGo.GetComponent<Zone>();
                     settlementsN--;
+
+                    if (currentTribeIndex < tribeIndexes.Length)
+                    {
+                        if (tribeIndexes[currentTribeIndex] == 1)
+                        {
+                            GameManager.Singleton.GetPlayerScript().InitializeTribe(cellsList[randIndex].Item1,
+                                                                                    cellsList[randIndex].Item2);
+                            currentTribeIndex++;
+                        }
+                        else
+                        {
+                            GameManager.Singleton.GetTribeScript(tribeIndexes[currentTribeIndex]).InitializeTribe(cellsList[randIndex].Item1,
+                                                                                                    cellsList[randIndex].Item2);
+                            currentTribeIndex++;
+                        }
+                    }
+
                     break;
 
                 default:
+                    zoneGo = null;
                     Debug.LogError("Invalid or unrecognized Zone Index");
                     break;
             }
             cellsList.RemoveAt(randIndex);
 
-            if (totalZones <= 0) //In case there is a problem with the spawning break the loop
+            //Zone set indexes in grid
+            Zone zoneScr = null;
+            if (zoneGo != null) zoneScr = zoneGo.GetComponent<Zone>();
+            if (zoneScr != null)
             {
-                Debug.LogError($"Error in spawning | TotalZones: {totalZones}");
-                break;
+                zoneScr.SetIndexesInGrid(cellsList[randIndex].Item1, cellsList[randIndex].Item2);
             }
+
+            if (totalZones <= 0) //In case there is a problem with the spawning break the loop
+                {
+                    Debug.LogError($"Error in spawning | TotalZones: {totalZones}");
+                    break;
+                }
             totalZones--;
         }
     }
@@ -156,8 +193,11 @@ public class MapManager : MonoSingleton<MapManager>
         {
             for (int e = 0; e < gridSize; e++)
             {
-                _gridZones[i, e] = -1;
+                GridZones[i, e] = -1;
             }
         }
     }
+
+    public void SetGridTribeControl(int x, int z, int tribeIndex) => GridTribeControl[x, z] = tribeIndex;
+    public void SetGridZoneLevel(int x, int z, int level) => GridZonesLevels[x, z] = level;
 }

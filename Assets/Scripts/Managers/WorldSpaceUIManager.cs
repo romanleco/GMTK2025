@@ -16,7 +16,7 @@ public class WorldSpaceUIManager : MonoSingleton<WorldSpaceUIManager>
     {
         Image newDisplay = Instantiate(_zoneTribeColorDisplayPrefab, position, Quaternion.identity);
         _zoneTribeColorDisplays.Add(newDisplay);
-        newDisplay.transform.parent = transform;
+        newDisplay.transform.SetParent(transform);
         
         newDisplay.transform.position = position;
 

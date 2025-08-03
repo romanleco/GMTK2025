@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,6 +22,23 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
             SendUnitsToZone();
             
+    }
+
+    public void InitializeTribe(int x, int z)
+    {
+        AddToResource(0, 12);
+        MapManager.Singleton.SetGridTribeControl(x, z, GameManager.PLAYER_TRIBE_INDEX);
+        ZSettlement settlementScr = MapManager.Singleton.GridZonesScr[x, z].GetComponent<ZSettlement>();
+        if (settlementScr != null)
+        {
+            settlementScr.SetOwnedByTribe(GameManager.PLAYER_TRIBE_INDEX);
+            for (int i = 0; i < 3; i++)
+            {
+                settlementScr.GenerateUnit(GameManager.PLAYER_TRIBE_INDEX);
+            }
+        }
+        else
+            Debug.LogError("Player Tribe Starter Settlement Null");
     }
 
     private void SelectZone()
